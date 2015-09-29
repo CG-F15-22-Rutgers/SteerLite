@@ -167,7 +167,7 @@ Point Curve::useHermiteCurve(const unsigned int nextPoint, const float time)
 	float h3 = pow(s, 3) - 2 * pow(s, 2) + s;
 	float h4 = pow(s, 3) - pow(s, 2);
 
-	newPosition = h1*P1.position + h2*P2.position + h3*P1.tangent + h4*P2.tangent;
+	newPosition = h1*P1.position + h2*P2.position + h3*P1.tangent*(P2.time-P1.time) + h4*P2.tangent*(P2.time-P1.time);
 
 
 
@@ -196,9 +196,9 @@ Point Curve::useCatmullCurve(const unsigned int nextPoint, const float time)
 	float normalTime, intervalTime;
 
 
-
 	CurvePoint &P1 = controlPoints[nextPoint - 1];
 	CurvePoint &P2 = controlPoints[nextPoint];
+
 	float s = (time - P1.time) / (P2.time - P1.time);
 	float h1 = 2 * pow(s, 3) - 3 * pow(s, 2) + 1;
 	float h2 = -2 * pow(s, 3) + 3 * pow(s, 2);
@@ -206,31 +206,33 @@ Point Curve::useCatmullCurve(const unsigned int nextPoint, const float time)
 	float h4 = pow(s, 3) - pow(s, 2);
 	Vector T1, T2;
 
-	if (nextPoint == 1)
+	if (controlPoints.size() == 2)
 	{
-		T1 = (controlPoints.end()->position - P1.position)*0.5;
-		if (nextPoint == controlPoints.size() - 1)
-			T2 = T1;
-		else
-		{
-			T2 = (controlPoints[nextPoint + 1].position - controlPoints[nextPoint - 1].position)*0.5;
-		}
+		T1 = (P2.position - P1.position)/(P2.time - P1.time);
+		T2 = T1;
 	}
+	else if (nextPoint == 1)
+	{	
+		CurvePoint &P3 = controlPoints[nextPoint + 1];
+		T1 = (P2.position - P1.position)/(P2.time - P1.time)*(P3.time - P1.time)/(P3.time - P2.time) - (P3.position - P1.position)/(P3.time - P1.time)*(P2.time-P1.time)/(P3.time - P2.time);
+		T2 = (P3.position - P2.position)/(P3.time - P2.time)*(P2.time - P1.time)/(P3.time - P1.time) + (P2.position - P1.position)/(P2.time - P1.time)*(P3.time-P2.time)/(P3.time - P1.time);
+	}
+
 	else if (nextPoint == controlPoints.size() - 1)
 	{
-		T2 = (P2.position - controlPoints.begin()->position)*0.5;
-		if (nextPoint - 1 == 0)
-			T1 == T2;
-		else
-		{
-			T1 = (controlPoints[nextPoint].position - controlPoints[nextPoint - 2].position)*0.5;
-		}
+		
+		CurvePoint &P0 = controlPoints[nextPoint - 2];
+		T1 = (P2.position - P1.position)/(P2.time - P1.time)*(P1.time - P0.time)/(P2.time - P0.time) + (P1.position - P0.position)/(P1.time - P0.time)*(P2.time-P1.time)/(P2.time - P0.time);
+		T2 = (P2.position - P1.position)/(P2.time - P1.time)*(P2.time - P0.time)/(P1.time - P0.time) - (P2.position - P0.position)/(P2.time - P0.time)*(P1.time-P0.time)/(P1.time - P0.time); 
 	}
 	else {
-		T1 = (controlPoints[nextPoint].position - controlPoints[nextPoint - 2].position)*0.5;
-		T2 = (controlPoints[nextPoint + 1].position - controlPoints[nextPoint - 1].position)*0.5;
+		CurvePoint &P0 = controlPoints[nextPoint - 2];
+		CurvePoint &P3 = controlPoints[nextPoint + 1];
+		T1 = (P2.position - P1.position)/(P2.time - P1.time)*(P1.time - P0.time)/(P2.time - P0.time) + (P1.position - P0.position)/(P1.time - P0.time)*(P2.time-P1.time)/(P2.time - P0.time);
+		T2 = (P3.position - P2.position)/(P3.time - P2.time)*(P2.time - P1.time)/(P3.time - P1.time) + (P2.position - P1.position)/(P2.time - P1.time)*(P3.time-P2.time)/(P3.time - P1.time);
 	}
-	newPosition = h1*P1.position + h2*P2.position + h3*T1 + h4*T2;
+
+	newPosition = h1*P1.position + h2*P2.position + h3*T1*(P2.time - P1.time) + h4*T2*(P2.time - P1.time);
 
 
 
