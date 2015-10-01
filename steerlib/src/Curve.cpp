@@ -43,13 +43,15 @@ void Curve::addControlPoints(const std::vector<CurvePoint>& inputPoints)
 // Draw the curve shape on screen, usign window as step size (bigger window: less accurate shape)
 void Curve::drawCurve(Color curveColor, float curveThickness, int window)
 {	
-	Point & a,b;
+	Point & a = controlPoints.front().position;
+	Point & b = a;
 #ifdef ENABLE_GUI
-	for ( int t = 0; t < controlPoints.end().time; t = t + window)
+	for ( int t = 0; t < controlPoints.back().time; t = t + window)
 	{
-		Curve::calculatePoint(Point& a ,t);
-		Curve::calculatePoint(Point& b ,t+window);
-		Drawlib::drawLine(const Point & a, const Point & b, const Color curveColor, float curveThickness);
+		int t1 = t + window;
+		calculatePoint( a, t);
+		calculatePoint( b, t1);
+		DrawLib::drawLine(a, b, curveColor, curveThickness);
 	}
 	//================DELETE THIS PART AND THEN START CODING===================
 	//static bool flag = false;
