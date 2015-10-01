@@ -42,16 +42,22 @@ void Curve::addControlPoints(const std::vector<CurvePoint>& inputPoints)
 
 // Draw the curve shape on screen, usign window as step size (bigger window: less accurate shape)
 void Curve::drawCurve(Color curveColor, float curveThickness, int window)
-{
+{	
+	Point & a,b;
 #ifdef ENABLE_GUI
-
-	//================DELETE THIS PART AND THEN START CODING===================
-	static bool flag = false;
-	if (!flag)
+	for ( int t = 0; t < controlPoints.end().time; t = t + window)
 	{
-		std::cerr << "ERROR>>>>Member function drawCurve is not implemented!" << std::endl;
-		flag = true;
+		Curve::calculatePoint(Point& a ,t);
+		Curve::calculatePoint(Point& b ,t+window);
+		Drawlib::drawLine(const Point & a, const Point & b, const Color curveColor, float curveThickness);
 	}
+	//================DELETE THIS PART AND THEN START CODING===================
+	//static bool flag = false;
+	//if (!flag)
+	//{
+	//	std::cerr << "ERROR>>>>Member function drawCurve is not implemented!" << std::endl;
+	//	flag = true;
+	//}
 	//=========================================================================
 
 	// Robustness: make sure there is at least two control point: start and end points
