@@ -225,7 +225,7 @@ Point Curve::useCatmullCurve(const unsigned int nextPoint, const float time)
 		T2 = (P3.position - P2.position)/(P3.time - P2.time)*(P2.time - P1.time)/(P3.time - P1.time) + (P2.position - P1.position)/(P2.time - P1.time)*(P3.time-P2.time)/(P3.time - P1.time);
 	}
 
-	else if (nextPoint == controlPoints.size() - 1)
+	else if (nextPoint == controlPoints.size() )
 	{
 		
 		CurvePoint &P0 = controlPoints[nextPoint - 2];
