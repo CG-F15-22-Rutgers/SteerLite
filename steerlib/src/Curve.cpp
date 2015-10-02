@@ -41,7 +41,7 @@ void Curve::addControlPoints(const std::vector<CurvePoint>& inputPoints)
 }
 
 // Draw the curve shape on screen, usign window as step size (bigger window: less accurate shape)
-void Curve::drawCurve(Color curveColor, float curveThickness, int window)
+void Curve::drawCurve(Color curveColor, float curveThickness , int window)
 {	
 	Point & a = controlPoints.front().position;
 	Point & b = a;
@@ -98,7 +98,6 @@ bool Curve::calculatePoint(Point& outputPoint, float time)
 	// Define temporary parameters for calculation
 	unsigned int nextPoint;
 	float normalTime, intervalTime;
-
 	// Find the current interval in time, supposing that controlPoints is sorted (sorting is done whenever control points are added)
 	if (!findTimeInterval(nextPoint, time))
 		return false;
