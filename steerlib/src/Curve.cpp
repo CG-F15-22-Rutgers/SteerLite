@@ -43,8 +43,8 @@ void Curve::addControlPoints(const std::vector<CurvePoint>& inputPoints)
 // Draw the curve shape on screen, usign window as step size (bigger window: less accurate shape)
 void Curve::drawCurve(Color curveColor, float curveThickness , int window)
 {	
-	Point & a = controlPoints.front().position;
-	Point & b = a;
+	Point  a = controlPoints.front().position;
+	Point  b = a;
 #ifdef ENABLE_GUI
 	for ( int t = 0; t < controlPoints.back().time; t = t + window)
 	{
@@ -97,7 +97,6 @@ bool Curve::calculatePoint(Point& outputPoint, float time)
 
 	// Define temporary parameters for calculation
 	unsigned int nextPoint;
-	float normalTime, intervalTime;
 	// Find the current interval in time, supposing that controlPoints is sorted (sorting is done whenever control points are added)
 	if (!findTimeInterval(nextPoint, time))
 		return false;
@@ -162,9 +161,6 @@ bool Curve::findTimeInterval(unsigned int& nextPoint, float time)
 Point Curve::useHermiteCurve(const unsigned int nextPoint, const float time)
 {
 	Point newPosition;
-	float normalTime, intervalTime;
-
-
 
 	CurvePoint &P1 = controlPoints[nextPoint - 1];
 	CurvePoint &P2 = controlPoints[nextPoint];
@@ -200,8 +196,6 @@ Point Curve::useHermiteCurve(const unsigned int nextPoint, const float time)
 Point Curve::useCatmullCurve(const unsigned int nextPoint, const float time)
 {
 	Point newPosition;
-	float normalTime, intervalTime;
-
 
 	CurvePoint &P1 = controlPoints[nextPoint - 1];
 	CurvePoint &P2 = controlPoints[nextPoint];
