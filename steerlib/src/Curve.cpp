@@ -75,6 +75,18 @@ void Curve::sortControlPoints()
 {
 	//binary search and insert sort maybe better,lambda for c++ 11
 	std::sort(controlPoints.begin(), controlPoints.end(), [](const CurvePoint &left, const CurvePoint &right) {return left.time < right.time; });
+	for (auto it = controlPoints.begin(); it != controlPoints.end();)
+	{
+		if (it != controlPoints.begin())
+		{
+			if (it->time == (it - 1)->time)
+				it = controlPoints.erase(it);
+			else it++;
+			
+		}
+		else it++;
+	}
+
 
 	//================DELETE THIS PART AND THEN START CODING===================
 	/*static bool flag = false;
